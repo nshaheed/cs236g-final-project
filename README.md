@@ -1,20 +1,51 @@
-<img src='imgs/teaser_720.gif' align="right" width=360>
 
-<br><br><br><br>
 
 # CS 236G branch-specific instructions
 
-Here are the instructions for my CS236G projects.
+This is my project branch of the [Pix2PixHD](https://tcwang0509.github.io/pix2pixHD/) repo.
+This section will contain my instructions for running the CS236G projects.
 
 ## Pix2PixHD run instructions
 
+### Download 
+To download:
+
+```
+git clone https://github.com/nshaheed/cs236g-final-project.git
+cd cs236g-final-project
+```
 ### Acquire Data
+
+The dataset is drone footage of a drone capturing a tree
 
 ### Train
 
+There are a vareity of helper scripts in the scripts/custom directory with a variety of settings I've tried.
+
+The settings I used to train for the final generation of data are these:
+
+```
+python train_video.py --name drone1_dataset_512 --dataroot ./datasets/drone1_dataset/ --save_epoch_freq 10 --ngf 32 --loadSize 512 --fineSize 512 --tf_log
+```
+
 ### Inference
 
-Run the following scripts
+In order to infer some results, run the following command:
+
+```
+ python generate_video.py --name drone1_dataset_512 --dataroot ./datasets/drone1_dataset/ --fps 24 --which_epoch latest --how_many 600 --ngf 32 --start_from noise
+```
+
+stitck the images together into a video with ffmpeg (this would be done automatically in the previous command, but it is not working with windows for some reason).
+
+```
+ffmpeg -r 24 -f image2 -i ./checkpoints/drone1_dataset_512/frames/frame-%05d.jpg -vcodec libx264 -crf 25 -pix_fmt yuv420p output.mp4
+```
+
+
+<img src='imgs/teaser_720.gif' align="right" width=360>
+
+<br><br><br><br>
 
 # pix2pixHD
 ### [Project](https://tcwang0509.github.io/pix2pixHD/) | [Youtube](https://youtu.be/3AIpPlzM_qs) | [Paper](https://arxiv.org/pdf/1711.11585.pdf) <br>
