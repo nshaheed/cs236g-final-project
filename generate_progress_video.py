@@ -20,7 +20,11 @@ opt.no_flip = True  # no flip
 opt.video_mode = True
 opt.label_nc = 0
 opt.no_instance = True
-opt.resize_or_crop = "none"
+
+if opt.resize_or_crop is None:
+    opt.resize_or_crop = "none"
+
+opt.nThreads = 0
 
 # loading initial frames from: ./datasets/NAME/test_frames
 data_loader = CreateDataLoader(opt)
@@ -43,7 +47,7 @@ frame_index = 1
 for data in dataset:
     t = data['left_frame']
     video_utils.save_tensor(t, 
-        frame_dir + "/frame-%s.jpg" % str(frame_index).zfill(5),
+        frame_dir + "/%s.jpg" % str(frame_index).zfill(6),
         text="original video",
     )
     frame_index += 1
@@ -67,7 +71,11 @@ for epoch_index in range(opt.pstart, opt.pstop+1):
     # loading the generator model from checkpoint directory <opt.name>
     # with the weights from epoch <epoch_index>
     opt.which_epoch=epoch_index
-    model = create_model(opt)
+
+    try:
+        model = create_model(opt)
+    except TypeError:
+        continue
 
     for j in range(FRAMES_PER_EPOCH):
         next_frame = video_utils.next_frame_prediction(model, current_frame)
@@ -80,7 +88,7 @@ for epoch_index in range(opt.pstart, opt.pstop+1):
 
         video_utils.save_tensor(
             next_frame, 
-            frame_dir + "/frame-%s.jpg" % str(frame_index).zfill(5),
+            frame_dir + "/frame-%s.jpg" % str(frame_index).zfill(6),
             text="epoch %d" % epoch_index
         )
         current_frame = next_frame

@@ -1,0 +1,2 @@
+# generate hd video for drone1_dataset_1088_2
+ python generate_video.py --name drone1_dataset_1088_2 --dataroot ./datasets/drone1_dataset/ --fps 24 --which_epoch latest --how_many 600 --ngf 32 --netG local --loadSize 1920 --fineSize 1920

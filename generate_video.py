@@ -18,11 +18,21 @@ opt.batchSize = 1  # test code only supports batchSize = 1
 opt.serial_batches = True  # no shuffle
 opt.no_flip = True  # no flip
 
+opt.nThreads = 0
+
 # additional enforced options for video
 opt.video_mode = True
 opt.label_nc = 0
 opt.no_instance = True
-opt.resize_or_crop = "none"
+
+
+if opt.resize_or_crop is None:
+    opt.resize_or_crop = "none"
+
+# for 512
+# opt.resize_or_crop = 'resize_and_crop'
+# opt.resize_or_crop = 'crop'
+opt.fp16 = True
 
 # loading initial frames from: ./datasets/NAME/test_frames
 data_loader = CreateDataLoader(opt)
@@ -66,6 +76,8 @@ else:
                 frame_dir + "/frame-%s.jpg" % str(frame_index).zfill(5),
             )
             frame_index += 1
+    else:
+        print('file not found')
 
 current_frame = t
 

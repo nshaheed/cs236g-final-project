@@ -22,7 +22,7 @@ def save_tensor(tensor, path, text="", text_pos="auto", text_color=(255,255,255)
             text_xpos, text_ypos = text_pos
 
         draw = ImageDraw.Draw(img_pil)
-        font = ImageFont.truetype("/usr/share/fonts/truetype/ubuntu/Ubuntu-B.ttf", 50)
+        font = ImageFont.truetype("arial.ttf", 50)
         draw.text((text_xpos, text_ypos), text, text_color, font=font)
 
     img_pil.save(path)
@@ -68,7 +68,7 @@ def extract_frames_from_video(video_path, frame_dir, output_shape=(1280, 736), f
     ex: 1920x1080 --> 1308x736 --> 1280x736
     """
     width, height = output_shape
-    command = """ffmpeg -v %d -i %s -q:v 2 -vf "scale=iw*%d/ih:%d, crop=%d:%d" %s/frame-%%06d.jpg -hide_banner""" % (
+    command = """ffmpeg -v "%d" -i %s -q:v 2 -vf "scale=iw*%d/ih:%d, crop=%d:%d" %s/frame-%%06d.jpg -hide_banner""" % (
         ffmpeg_verbosity,
         video_path,
         height,

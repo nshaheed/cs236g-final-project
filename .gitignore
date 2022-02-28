@@ -38,3 +38,9 @@ test/.coverage
 test/data/legacy_serialized.pt
 *.DS_Store
 *~
+*.bak
+*.mp4
+*.jpg
+*~
+*.pdn
+*.png

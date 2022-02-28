@@ -39,9 +39,23 @@ opt.video_mode = True
 opt.label_nc = 0
 opt.no_instance = True
 
+opt.nThreads = 0
+
 # could be changed, but not tested
-opt.resize_or_crop = "none"
-opt.batchSize = 1
+# opt.resize_or_crop = "none"
+
+if opt.batchSize is None:
+    opt.batchSize = 1
+
+# Test for doing 512 training
+# opt.resize_or_crop = 'resize_and_crop'
+# opt.resize_or_crop = 'crop'
+if opt.resize_or_crop is None:
+    opt.resize_or_crop = 'none'
+opt.fp16 = True
+# opt.batchSize = 8 # can't be >1 in ss mode
+
+
 
 # this debug directory will contain input/output frame pairs
 if opt.debug:
@@ -72,16 +86,28 @@ display_delta = total_steps % opt.display_freq
 print_delta = total_steps % opt.print_freq
 save_delta = total_steps % opt.save_latest_freq
 
+print('model:')
+print(model)
+print('\r\n')
 
 for epoch in range(start_epoch, opt.niter + opt.niter_decay + 1):
     epoch_start_time = time.time()
     if epoch != start_epoch:
         epoch_iter = epoch_iter % dataset_size
 
+    # print('dataset here')
+    # print('epoch', epoch)
     for i, data in enumerate(dataset, start=epoch_iter):
+        # print('reached inside inner loop')
+        # print(i, data)
         iter_start_time = time.time()
         total_steps += opt.batchSize
         epoch_iter += opt.batchSize
+        
+        # print(data)
+        
+        # whether to collect output images
+        save_fake = total_steps % opt.display_freq == display_delta
 
         ############## Forward Pass - frame t -> frame t+1 ######################
 
@@ -101,7 +127,8 @@ for epoch in range(start_epoch, opt.niter + opt.niter_decay + 1):
         losses, latest_generated_frame = model(
             left_frame, None,
             right_frame, None,
-            infer=opt.scheduled_sampling
+            # infer=opt.scheduled_sampling
+            infer = save_fake
         )
 
         # sum per device losses
@@ -132,6 +159,14 @@ for epoch in range(start_epoch, opt.niter + opt.niter_decay + 1):
             t = (time.time() - iter_start_time) / opt.batchSize
             visualizer.print_current_errors(epoch, epoch_iter, errors, t)
             visualizer.plot_current_errors(errors, total_steps)
+        
+        ### display output images
+        if save_fake and opt.tf_log:
+            # print('latest_generated_frame', latest_generated_frame, losses)
+            visuals = OrderedDict([('input_label', util.tensor2label(data['left_frame'][0], opt.label_nc)),
+                                   ('synthesized_image', util.tensor2im(latest_generated_frame.data[0])),
+                                   ('real_image', util.tensor2im(data['right_frame'][0]))])
+            visualizer.display_current_results(visuals, epoch, total_steps)
 
         ### save latest model
         if total_steps % opt.save_latest_freq == save_delta:
