@@ -16,7 +16,7 @@ cd cs236g-final-project
 ```
 ### Acquire Data
 
-The dataset is drone footage of a drone capturing a tree
+The dataset is drone footage of a drone capturing a tree. This data can be acquired [here](https://drive.google.com/file/d/1N4KvnlCB2oHctu8mBx61PrIhFS4z9fmG/view?usp=sharing). Unzip this data to the `./datasets/drone1_dataset/train_frames` directory.
 
 ### Train
 
