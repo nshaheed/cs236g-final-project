@@ -2,7 +2,7 @@
 
 # CS 236G branch-specific instructions
 
-This is my project branch of the [Pix2PixHD](https://tcwang0509.github.io/pix2pixHD/) repo.
+This is my project branch of the [Pix2PixHD](https://tcwang0509.github.io/pix2pixHD/) repo, specifically it is based off of the fork used by [this article](https://medium.com/@jctestud/video-generation-with-pix2pix-aed5b1b69f57) to do frame prediction with Pix2PixHD.
 This section will contain my instructions for running the CS236G projects.
 
 ## Pix2PixHD run instructions
